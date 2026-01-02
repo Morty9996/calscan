@@ -7,14 +7,14 @@
  * You can remove the `reset-project` script from package.json and safely delete this file after running it.
  */
 
-const fs = require('fs');
-const path = require('path');
-const readline = require('readline');
+const fs = require("fs");
+const path = require("path");
+const readline = require("readline");
 
 const root = process.cwd();
-const srcPath = path.join(root, 'src');
-const oldDirs = ['navigation', 'components', 'hooks', 'constants', 'scripts'];
-const exampleDir = 'src-example';
+const srcPath = path.join(root, "src");
+const oldDirs = ["navigation", "components", "hooks", "constants", "scripts"];
+const exampleDir = "src-example";
 const exampleDirPath = path.join(root, exampleDir);
 
 const homeScreenContent = `import { Text, View, StyleSheet } from "react-native";
@@ -64,7 +64,7 @@ const rl = readline.createInterface({
 
 const moveDirectories = async (userInput) => {
   try {
-    if (userInput === 'y') {
+    if (userInput === "y") {
       // Create the src-example directory
       await fs.promises.mkdir(exampleDirPath, { recursive: true });
       console.log(`📁 /${exampleDir} directory created.`);
@@ -74,7 +74,7 @@ const moveDirectories = async (userInput) => {
     for (const dir of oldDirs) {
       const oldDirPath = path.join(srcPath, dir);
       if (fs.existsSync(oldDirPath)) {
-        if (userInput === 'y') {
+        if (userInput === "y") {
           const newDirPath = path.join(exampleDirPath, dir);
           await fs.promises.rename(oldDirPath, newDirPath);
           console.log(`➡️ /src/${dir} moved to /${exampleDir}/${dir}.`);
@@ -88,33 +88,33 @@ const moveDirectories = async (userInput) => {
     }
 
     // Create new navigation directory structure
-    const navigationPath = path.join(srcPath, 'navigation');
-    const screensPath = path.join(navigationPath, 'screens');
+    const navigationPath = path.join(srcPath, "navigation");
+    const screensPath = path.join(navigationPath, "screens");
     await fs.promises.mkdir(screensPath, { recursive: true });
-    console.log('\n📁 New /src/navigation directory structure created.');
+    console.log("\n📁 New /src/navigation directory structure created.");
 
     // Create Home.tsx screen
-    const homePath = path.join(screensPath, 'Home.tsx');
+    const homePath = path.join(screensPath, "Home.tsx");
     await fs.promises.writeFile(homePath, homeScreenContent);
-    console.log('📄 src/navigation/screens/Home.tsx created.');
+    console.log("📄 src/navigation/screens/Home.tsx created.");
 
     // Create navigation index.tsx
-    const navIndexPath = path.join(navigationPath, 'index.tsx');
+    const navIndexPath = path.join(navigationPath, "index.tsx");
     await fs.promises.writeFile(navIndexPath, navigationContent);
-    console.log('📄 src/navigation/index.tsx created.');
+    console.log("📄 src/navigation/index.tsx created.");
 
     // Update App.tsx
-    const appPath = path.join(srcPath, 'App.tsx');
+    const appPath = path.join(srcPath, "App.tsx");
     await fs.promises.writeFile(appPath, appContent);
-    console.log('📄 src/App.tsx updated.');
+    console.log("📄 src/App.tsx updated.");
 
-    console.log('\n✅ Project reset complete. Next steps:');
+    console.log("\n✅ Project reset complete. Next steps:");
     console.log(
       `1. Run \`npx expo start\` to start a development server.\n2. Edit src/navigation/screens/Home.tsx to edit the main screen.${
-        userInput === 'y'
+        userInput === "y"
           ? `\n3. Delete the /${exampleDir} directory when you're done referencing it.`
-          : ''
-      }`
+          : ""
+      }`,
     );
   } catch (error) {
     console.error(`❌ Error during script execution: ${error.message}`);
@@ -122,14 +122,14 @@ const moveDirectories = async (userInput) => {
 };
 
 rl.question(
-  'Do you want to move existing files to /src-example instead of deleting them? (Y/n): ',
+  "Do you want to move existing files to /src-example instead of deleting them? (Y/n): ",
   (answer) => {
-    const userInput = answer.trim().toLowerCase() || 'y';
-    if (userInput === 'y' || userInput === 'n') {
+    const userInput = answer.trim().toLowerCase() || "y";
+    if (userInput === "y" || userInput === "n") {
       moveDirectories(userInput).finally(() => rl.close());
     } else {
       console.log("❌ Invalid input. Please enter 'Y' or 'N'.");
       rl.close();
     }
-  }
+  },
 );
