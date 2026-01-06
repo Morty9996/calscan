@@ -1,9 +1,10 @@
 import { Text, View } from "react-native";
 
-export function Explore() {
+export function Home() {
   return (
     <View style={{ paddingVertical: 40, paddingHorizontal: 20 }}>
-      <Text style={{ color: "blue", fontSize: 50 }}>Explore</Text>
+      <Text style={{ color: "red", fontSize: 50 }}>Hello</Text>
     </View>
   );
 }
+

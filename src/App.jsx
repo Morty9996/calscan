@@ -27,7 +27,7 @@ export default function App() {
 
   if (!permission) return <View />;
 
-  const analyzeImage = async (base64: string) => {
+  const analyzeImage = async (base64) => {
     setLoading(true);
     try {
       const model = genAI.getGenerativeModel({
