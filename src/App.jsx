@@ -1,12 +1,12 @@
 import React, { useState, useRef } from "react";
 import {
-  StyleSheet,
   Text,
   View,
   TouchableOpacity,
   Image,
   Alert,
   ScrollView,
+  StyleSheet,
 } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -25,7 +25,7 @@ export default function App() {
   const [history, setHistory] = useState([]);
   const cameraRef = useRef(null);
 
-  if (!permission) return <View />;
+  if (!permission) return <View className="flex-1" />;
 
   const analyzeImage = async (base64) => {
     setLoading(true);
@@ -71,44 +71,57 @@ export default function App() {
   // --- UI: DASHBOARD ---
   if (!showCamera && !photo) {
     return (
-      <SafeAreaView style={styles.dashboard}>
-        <View style={styles.header}>
-          <Text style={styles.title}>NutriScan</Text>
+      <SafeAreaView className="flex-1 bg-[#F8F9FB] px-5">
+        <View className="flex-row justify-between items-center py-5">
+          <Text className="text-3xl font-extrabold text-[#185A9F]">
+            NutriScan
+          </Text>
         </View>
 
         <ScrollView showsVerticalScrollIndicator={false}>
-          <View style={styles.heroContainer}>
+          <View className="items-stretch mb-5">
             <Image
               source={require("./assets/images/hero.png")}
+              className="h-[220px]"
               style={{
                 width: "auto",
-                height: 220,
                 objectFit: "contain",
               }}
             />
           </View>
 
           <TouchableOpacity
-            style={styles.mainCard}
+            className="p-2.5 items-center my-5"
             onPress={() => setShowCamera(true)}
           >
-            <View style={styles.imageCircle}>
+            <View className="w-[120px] h-[120px] rounded-full overflow-hidden justify-center items-center mb-5">
               <Image
                 source={require("./assets/images/camera.png")}
-                style={{ width: 140, height: 140, objectFit: "cover" }}
+                className="w-[140px] h-[140px]"
+                style={{ objectFit: "cover" }}
               />
             </View>
-            <Text style={styles.cardTitle}>Scan Your Meal</Text>
-            <Text style={styles.cardPrice}>Click to open camera</Text>
+            <Text className="text-xl font-bold">Scan Your Meal</Text>
+            <Text className="text-[#185A9F] font-semibold mt-1.5">
+              Click to open camera
+            </Text>
           </TouchableOpacity>
 
-          <Text style={styles.sectionLabel}>Recently Added</Text>
+          <Text className="text-lg font-bold my-4">Recently Added</Text>
           {history.map((item, index) => (
-            <View key={index} style={styles.historyItem}>
-              <Image source={{ uri: item.uri }} style={styles.historyImg} />
+            <View
+              key={index}
+              className="flex-row items-center bg-white p-4 rounded-[20px] mb-4"
+            >
+              <Image
+                source={{ uri: item.uri }}
+                className="w-[50px] h-[50px] rounded-[15px] mr-4"
+              />
               <View>
-                <Text style={styles.historyName}>{item.food}</Text>
-                <Text style={styles.historyDetail}>{item.calories} kcal</Text>
+                <Text className="font-bold text-base">{item.food}</Text>
+                <Text className="text-gray-500 text-[13px]">
+                  {item.calories} kcal
+                </Text>
               </View>
             </View>
           ))}
@@ -120,10 +133,13 @@ export default function App() {
   // --- UI: CAMERA ---
   if (showCamera) {
     return (
-      <View style={styles.container}>
+      <View className="flex-1 bg-[#F8F9FB]">
         <CameraView style={StyleSheet.absoluteFill} ref={cameraRef} />
-        <TouchableOpacity style={styles.captureBtn} onPress={takePicture}>
-          <View style={styles.captureInner} />
+        <TouchableOpacity
+          className="absolute bottom-[50px] self-center w-20 h-20 rounded-[20px] bg-white/30 p-1.5"
+          onPress={takePicture}
+        >
+          <View className="flex-1 rounded-[40px] bg-white" />
         </TouchableOpacity>
       </View>
     );
@@ -131,35 +147,38 @@ export default function App() {
 
   // --- UI: DETAIL VIEW (Matches your image) ---
   return (
-    <View style={styles.container}>
-      <View style={styles.detailHeader}>
-        <Image source={{ uri: photo }} style={styles.foodImageHero} />
+    <View className="flex-1 bg-[#F8F9FB]">
+      <View className="h-[40%] bg-[#1A1D1E] rounded-b-[50px] items-center justify-center">
+        <Image
+          source={{ uri: photo }}
+          className="w-[220px] h-[220px] rounded-[110px] absolute bottom-[-50px]"
+        />
       </View>
 
-      <View style={styles.detailContent}>
-        <Text style={styles.detailFoodName}>
+      <View className="flex-1 mt-[70px] px-[30px]">
+        <Text className="text-[28px] font-bold text-center">
           {nutrition?.food || "Analyzing..."}
         </Text>
-        <Text style={styles.detailDesc}>
+        <Text className="text-gray-500 text-center mt-2.5 leading-5">
           {loading
             ? "Our AI is calculating the macros..."
             : "Freshly scanned meal with estimated nutritional values based on portion size."}
         </Text>
 
-        <View style={styles.statsRow}>
+        <View className="flex-row justify-between mt-[30px]">
           <StatBox label="Calories" value={nutrition?.calories} />
           <StatBox label="Sugars" value={nutrition?.sugar} />
           <StatBox label="Protein" value={nutrition?.protein} />
         </View>
 
         <TouchableOpacity
-          style={styles.actionBtn}
+          className="bg-[#185A9F] h-[60px] rounded-[10px] justify-center items-center mt-auto mb-[30px]"
           onPress={() => {
             setPhoto(null);
             setNutrition(null);
           }}
         >
-          <Text style={styles.actionBtnText}>Done</Text>
+          <Text className="text-white text-[18px] font-bold">Done</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -167,131 +186,8 @@ export default function App() {
 }
 
 const StatBox = ({ label, value }) => (
-  <View style={styles.statBox}>
-    <Text style={styles.statLabel}>{label}</Text>
-    <Text style={styles.statValue}>{value || "--"}</Text>
+  <View className="w-[30%] p-4 bg-white rounded-[20px] items-center border border-[#F1F2F6]">
+    <Text className="text-[12px] text-gray-500">{label}</Text>
+    <Text className="text-base font-bold my-1">{value || "--"}</Text>
   </View>
 );
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F8F9FB" },
-  dashboard: { flex: 1, backgroundColor: "#F8F9FB", paddingHorizontal: 20 },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingVertical: 20,
-  },
-  title: { fontSize: 32, fontWeight: "800", color: "#185A9F" },
-
-  heroContainer: {
-    alignItems: "stretch",
-    marginBottom: 20,
-  },
-  mainCard: {
-    padding: 10,
-    alignItems: "center",
-    marginVertical: 20,
-  },
-  imageCircle: {
-    width: 120,
-    height: 120,
-    borderRadius: 600,
-    overflow: "hidden",
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  cardTitle: { fontSize: 20, fontWeight: "bold" },
-  cardPrice: { color: "#185A9F", fontWeight: "600", marginTop: 5 },
-
-  sectionLabel: { fontSize: 18, fontWeight: "bold", marginVertical: 15 },
-  historyItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#FFF",
-    padding: 15,
-    borderRadius: 20,
-    marginBottom: 15,
-  },
-  historyImg: { width: 50, height: 50, borderRadius: 15, marginRight: 15 },
-  historyName: { fontWeight: "bold", fontSize: 16 },
-  historyDetail: { color: "#888", fontSize: 13 },
-  addBtn: {
-    marginLeft: "auto",
-    width: 30,
-    height: 30,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "#EEE",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  // Detail View
-  detailHeader: {
-    height: "40%",
-    backgroundColor: "#1A1D1E",
-    borderBottomLeftRadius: 50,
-    borderBottomRightRadius: 50,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  foodImageHero: {
-    width: 220,
-    height: 220,
-    borderRadius: 110,
-    position: "absolute",
-    bottom: -50,
-  },
-  detailContent: { flex: 1, marginTop: 70, paddingHorizontal: 30 },
-  detailFoodName: { fontSize: 28, fontWeight: "bold", textAlign: "center" },
-  detailDesc: {
-    color: "#888",
-    textAlign: "center",
-    marginTop: 10,
-    lineHeight: 20,
-  },
-
-  statsRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 30,
-  },
-  statBox: {
-    width: "30%",
-    padding: 15,
-    backgroundColor: "#FFF",
-    borderRadius: 20,
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#F1F2F6",
-  },
-  statLabel: { fontSize: 12, color: "#888" },
-  statValue: { fontSize: 16, fontWeight: "bold", marginVertical: 4 },
-  statPercent: { fontSize: 12, fontWeight: "bold" },
-
-  actionBtn: {
-    backgroundColor: "#185A9F",
-    height: 60,
-    borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: "auto",
-    marginBottom: 30,
-  },
-  actionBtnText: { color: "#FFF", fontSize: 18, fontWeight: "bold" },
-
-  // Camera
-  captureBtn: {
-    position: "absolute",
-    bottom: 50,
-    alignSelf: "center",
-    width: 80,
-    height: 80,
-    borderRadius: 20,
-    backgroundColor: "rgba(255,255,255,0.3)",
-    padding: 5,
-  },
-  captureInner: { flex: 1, borderRadius: 40, backgroundColor: "#FFF" },
-});
