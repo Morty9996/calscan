@@ -14,7 +14,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const genAI = new GoogleGenerativeAI("AIzaSyByzLQfV4qzOcMOeH8noYBiduNm0s6d_qU");
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
 
 export default function App() {
   const [permission, requestPermission] = useCameraPermissions();
