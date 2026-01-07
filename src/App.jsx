@@ -29,7 +29,7 @@ export default function App() {
 
   if (!permission) return <View className="flex-1" />;
 
-  const analyzeImage = async (base64) => {
+  const analyzeImage = async (imageData) => {
     setLoading(true);
     try {
       const model = genAI.getGenerativeModel({
@@ -39,7 +39,7 @@ export default function App() {
         'Identify food and count nutritional values. if possible be precise with the values and quantity. Return strictly JSON: { "food": "Name", "calories": 564, "sugar": "2.8g", "protein": "33.3g" }. (if image is not food reurn the identified object nae with other valures nulled feeel free to be funny in that case just be very short)';
       const result = await model.generateContent([
         prompt,
-        { inlineData: { data: base64, mimeType: "image/jpeg" } },
+        { inlineData: { data: imageData.base64, mimeType: "image/jpeg" } },
       ]);
       const data = JSON.parse(
         result.response
@@ -48,10 +48,8 @@ export default function App() {
           .trim()
       );
 
-      console.log("data", data);
-
       setNutrition(data);
-      setHistory((prev) => [{ ...data, uri: photo }, ...prev]);
+      setHistory((prev) => [{ ...data, uri: imageData.uri }, ...prev]);
     } catch (err) {
       console.error("Analysis Error:", err);
       Alert.alert("Error", "Analysis failed.");
@@ -68,7 +66,7 @@ export default function App() {
       });
       setPhoto(data.uri);
       setShowCamera(false);
-      analyzeImage(data.base64);
+      analyzeImage(data);
     }
   };
 
@@ -174,6 +172,13 @@ export default function App() {
                     <Image
                       source={{ uri: item.uri }}
                       className="w-[60px] h-[60px] rounded-xl mr-4"
+                      resizeMode="cover" // Added resizeMode for better image display
+                      onError={(error) =>
+                        console.log(
+                          "Image loading error:",
+                          error.nativeEvent.error
+                        )
+                      } // Added error handling
                     />
                     <View className="absolute top-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
                   </View>
